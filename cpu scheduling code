@@ -1,0 +1,394 @@
+// this is a c# console application code for cpu scheduling 
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace cpu_scheduling
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            int choise;
+            Console.WriteLine("          Welcom to our scheduling program :)         ");
+        restart:
+            Console.WriteLine("To use FCFS     press  : 1    ");
+            Console.WriteLine("To use SJF      press  : 2    ");
+            Console.WriteLine("To use Priority press  : 3    ");
+            Console.WriteLine("To use RR       press  : 4    ");
+            try
+            {
+                choise = int.Parse(Console.ReadLine());
+
+                if (choise == 1)
+                {
+                    fcfs();
+                }
+                else if (choise == 2)
+                {
+                    SJF();
+                }
+                else if (choise == 3)
+                {
+                    Pri();
+                }
+                else if (choise == 4)
+                {
+                    RR();
+                }
+                else
+                {
+                    Console.WriteLine("out of reange please enter correct value :)    ");
+                    goto restart;
+                }
+            }
+            catch
+            {
+                Console.WriteLine("you entered a wrong entery    :)");
+                goto restart;
+            }
+
+        Ebrahim:
+            Console.WriteLine("\n To restart the prgram enter (y) to close enter (n)     :)");
+            try
+            {
+                char exit = char.Parse(Console.ReadLine());
+
+                if (exit == 'y')
+                {
+                    goto restart;
+                }
+                else if (exit == 'n')
+                {
+                    Console.Write("press any key to exit");
+                    Console.ReadLine();
+
+                }
+                else
+                {
+                    Console.WriteLine("out of range ");
+                    goto Ebrahim;
+                }
+            }
+            catch
+            {
+                Console.WriteLine("wrong entery please enter correct value :)  ");
+                goto Ebrahim;
+            }
+
+
+
+        }
+        public static void fcfs()
+        {
+
+            int i, b, a = 0, p;
+            int[] arr = new int[10];
+            int[] bust = new int[10];
+            int[] fin = new int[10];
+            int[] turn = new int[10];
+            Console.WriteLine("Enter number of process ::    ");
+            p = int.Parse(Console.ReadLine());
+            Console.WriteLine("Enter arrival time of process ");
+            for (i = 1; i <= p; i++)
+            {
+                arr[i] = int.Parse(Console.ReadLine());
+
+            }
+
+            Console.WriteLine("Enter brust time of process ");
+            for (i = 1; i <= p; i++)
+            {
+                bust[i] = int.Parse(Console.ReadLine());
+
+            }
+            for (i = 1; i <= p; i++)
+            {
+                Console.Write("p{0}\t", i);
+            }
+            Console.WriteLine("\n");
+            Console.Write("0 \t");
+            for (i = 1; i <= p; i++)
+            {
+                a = bust[i] + a;
+                fin[i] = a;
+                Console.Write("{0}\t", a);
+                turn[i] = fin[i] - arr[i];
+            }
+
+            Console.WriteLine("\nPROCESS    ARRIVAL TIME   BURST TIME   FINISHED TIME   TURNAROUND TIME\n");
+            Console.WriteLine("\n-------------------------------------------------------------------------\n");
+
+
+            for (i = 1; i <= p; i++)
+            { Console.WriteLine("P{0}\t\t{1}\t\t{2}\t\t{3}\t\t{4}\n", i, arr[i], bust[i], fin[i], turn[i]); }
+
+            Console.Write("\nAvrage wait time = \t");
+            double avg = 0;
+            for (i = 1; i < p; i++)
+                avg += fin[i];
+            Console.WriteLine(avg / p);
+
+        }
+
+        public static void SJF()
+        {
+            int p, i, j, temp, temp1;
+            int a = 0;
+
+
+            int[] arr = new int[10];
+            int[] bust = new int[10];
+            int[] fin = new int[10];
+            int[] turn = new int[10];
+            int[] pr = new int[10];
+
+            Console.Write("\nEnter the no of processes:: ");
+            p = int.Parse(Console.ReadLine());
+            for (i = 1; i <= p; i++)
+                pr[i] = i;
+
+            Console.Write("\nEnter burst time::");
+            for (i = 1; i <= p; i++)
+                bust[i] = int.Parse(Console.ReadLine());
+
+
+            Console.Write("\nEnter arrival time::");
+            for (i = 1; i <= p; i++)
+                arr[i] = int.Parse(Console.ReadLine());
+
+
+            for (i = 1; i <= p; i++)
+            {
+                for (j = i + 1; j <= p; j++)
+                {
+                    if (bust[i] > bust[j])
+                    {
+                        temp = pr[i];
+                        pr[i] = pr[j];
+                        pr[j] = temp;
+
+                        temp1 = bust[i];
+                        bust[i] = bust[j];
+                        bust[j] = temp1;
+
+
+
+                    }
+
+                }
+            }
+
+            for (i = 1; i <= p; i++)
+                Console.Write("P{0}\t", pr[i]);
+
+            Console.WriteLine("\n\n");
+            Console.Write("0\t");
+
+            for (i = 1; i <= p; i++)
+            {
+                a = a + bust[i];
+                fin[i] = a;
+                turn[i] = fin[i] - arr[i];
+                Console.Write("{0}\t", a);
+            }
+
+            Console.WriteLine("\nPROCESS    ARRIVAL TIME   BURST TIME   FINISHED TIME\n");
+            Console.WriteLine("\n-------------------------------------------------------------------------\n");
+
+            for (i = 1; i <= p; i++)
+                Console.WriteLine("P{0}\t\t{1}\t\t{2}\t\t{3}\t\t", pr[i], arr[i], bust[i], fin[i]);
+
+            Console.Write("\nAvrage wait time = \t");
+            double avg = 0;
+            for (i = 1; i < p; i++)
+                avg += fin[i];
+            Console.WriteLine(avg / p);
+
+
+
+
+        }
+
+        public static void Pri()
+        {
+            int p, i, j, temp, temp1, temp2;
+            int a = 0;
+
+            int[] pri = new int[10];
+            int[] arr = new int[10];
+            int[] bust = new int[10];
+            int[] fin = new int[10];
+            int[] turn = new int[10];
+            int[] pr = new int[10];
+
+            Console.Write("\nEnter the no of processes:: ");
+            p = int.Parse(Console.ReadLine());
+            for (i = 1; i <= p; i++)
+                pr[i] = i;
+
+            Console.Write("\nEnter burst time::");
+            for (i = 1; i <= p; i++)
+                bust[i] = int.Parse(Console.ReadLine());
+
+            Console.WriteLine("\nEnter priority::");
+            for (i = 1; i <= p; i++)
+                pri[i] = int.Parse(Console.ReadLine());
+
+
+
+
+            Console.Write("\nEnter arrival time::");
+            for (i = 1; i <= p; i++)
+                arr[i] = int.Parse(Console.ReadLine());
+
+
+            for (i = 1; i <= p; i++)
+            {
+                for (j = i + 1; j <= p; j++)
+                {
+                    if (pri[i] > pri[j])
+                    {
+                        temp = pri[i];
+                        pri[i] = pri[j];
+                        pri[j] = temp;
+
+                        temp1 = bust[i];
+                        bust[i] = bust[j];
+                        bust[j] = temp1;
+
+                        temp2 = pr[i];
+                        pr[i] = pr[j];
+                        pr[j] = temp2;
+
+                    }
+
+                }
+            }
+
+            for (i = 1; i <= p; i++)
+                Console.Write("P{0}\t", pr[i]);
+
+            Console.WriteLine("\n\n");
+            Console.Write("0\t");
+
+            for (i = 1; i <= p; i++)
+            {
+                a = a + bust[i];
+                fin[i] = a;
+                turn[i] = fin[i] - arr[i];
+                Console.Write("{0}\t", a);
+            }
+
+            Console.WriteLine("\nPROCESS    ARRIVAL TIME   BURST TIME   FINISHED TIME   priority\n");
+            Console.WriteLine("\n-------------------------------------------------------------------------\n");
+
+            for (i = 1; i <= p; i++)
+                Console.WriteLine("P{0}\t\t{1}\t\t{2}\t\t{3}\t\t{4}", pr[i], arr[i], bust[i], fin[i], pri[i]);
+
+            Console.Write("\nAvrage wait time = \t");
+            double avg = 0;
+            for (i = 1; i < p; i++)
+                avg += fin[i];
+            Console.WriteLine(avg / p);
+
+
+
+        }
+
+        public static void RR()
+        {
+            int p, i, tm, j, temp, max, b;
+            int[] bst = new int[10];
+            int[] pr = new int[10];
+            int[] bst1 = new int[10];
+            int[] bst2 = new int[10];
+            int[] fin = new int[10];
+            int[] arr = new int[10];
+            int[] turn = new int[10];
+            int a = 0;
+
+            Console.Write("\nEnter no. of process::  ");
+            p = int.Parse(Console.ReadLine());
+
+            Console.WriteLine("\nEnter the time quantum::");
+            tm = int.Parse(Console.ReadLine());
+
+            Console.WriteLine("\nEnter burst time::");
+            for (i = 1; i <= p; i++)
+            {
+                bst[i] = int.Parse(Console.ReadLine());
+                b = bst[i];
+                bst1[i] = b;
+                bst2[i] = b;
+            }
+
+
+            Console.WriteLine("\nEnter arrival time::");
+            for (i = 1; i <= p; i++)
+                arr[i] = int.Parse(Console.ReadLine());
+
+            // ترتيب تنازلي 
+            for (i = 1; i <= p; i++)
+            {
+                for (j = i + 1; j <= p; j++)
+                {
+                    if (bst[i] < bst[j])
+                    {
+                        temp = bst[i];
+                        bst[i] = bst[j];
+                        bst[j] = temp;
+                    }
+                }
+            }
+
+            max = bst[1];
+            Console.WriteLine("\n\nGANTT CHART\n\n");
+            Console.Write("0");
+
+            while (max != 0)
+            {
+                for (j = 1; j <= p; j++)
+                {
+                    if (bst1[j] == 0)
+                        break;
+
+                    if (bst1[j] <= tm)
+                    {
+                        Console.Write("|P{0}| ", j);
+                        a = a + bst1[j];
+                        Console.Write("{0} ", a);
+                        fin[j] = a;
+                        bst1[j] = bst1[j] - bst1[j];
+                    }
+                    else
+                    {
+                        Console.Write("|P{0}| ", j);
+                        a = a + tm;
+                        Console.Write("{0} ", a);
+                        bst1[j] = bst1[j] - tm;
+                    }
+
+                }
+                max = max - tm;
+            }
+
+
+            for (i = 1; i <= p; i++)
+                turn[i] = fin[i] - arr[i];
+
+            Console.Write("\n\nPROCESS   ARRIVAL TIME    FINISHED TIME   BURST TIME   TURNAROUND TIME\n");
+            Console.Write("\n----------------------------------------------------------------------------\n");
+            for (i = 1; i <= p; i++)
+                Console.Write("\nP{0}\t\t{1}\t\t{2}\t\t{3}\t\t{4}\n", i, arr[i], fin[i], bst2[i], turn[i]);
+
+
+
+        }
+
+    }
+}
+
